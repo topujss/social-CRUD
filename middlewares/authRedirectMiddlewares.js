@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken';
 import { validate } from '../utility/validate.js';
+import User from '../models/User.js';
 
 /**
  * Auth redirect

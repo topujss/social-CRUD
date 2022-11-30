@@ -20,6 +20,7 @@ route.get('/register', authMiddle, registerPage);
 route.post('/login', loginUser);
 route.post('/register', registerUser);
 route.get('/logout', logoutUser);
+route.get('/activate/:token', logoutUser);
 
 // export
 export default route;

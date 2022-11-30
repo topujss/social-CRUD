@@ -4,6 +4,7 @@ import { makeHash } from '../utility/hash.js';
 import { validate } from '../utility/validate.js';
 import bcrypt from 'bcryptjs';
 import { createToken } from '../utility/token.js';
+import { activateMail } from '../utility/mail.js';
 
 /**
  * view profile Page
@@ -44,6 +45,19 @@ export const registerUser = async (req, res) => {
       if (isEmail) {
         validate('Email already exist!', '/register', req, res);
       } else {
+        // make a token which can last 3 days
+        const token = createToken({ id: loginUser._id }, 1000 * 60 * 60 * 24 * 3);
+
+        // get activation email url
+        const activateLink = `${process.env.APP_URL}:${process.env.PORT}/activate/${token}`;
+
+        // pass email data
+        activateMail(email, {
+          name,
+          link: activateLink,
+          email,
+        });
+
         // get data from mongodb
         const user = User.create({ name, email, password: makeHash(password) });
         validate('User Registered', '/login', req, res);
@@ -72,15 +86,20 @@ export const loginUser = async (req, res) => {
       if (!loginUser) {
         validate('Email not exist', '/login', req, res);
       } else {
-        const userPass = bcrypt.compareSync(password, loginUser.password);
-
-        if (!userPass) {
-          validate('Invalid Password', '/login', req, res);
+        // check if account is active
+        if (!loginUser.isActivate) {
+          validate('Please activate!', '/login', req, res);
         } else {
-          const token = createToken({ id: loginUser._id }, 1000 * 60 * 60 * 24 * 365);
-          req.session.user = loginUser;
-          res.cookie('userToken', token);
-          validate('Login Success', '/', req, res);
+          const userPass = bcrypt.compareSync(password, loginUser.password);
+
+          if (!userPass) {
+            validate('Invalid Password', '/login', req, res);
+          } else {
+            const token = createToken({ id: loginUser._id }, 1000 * 60 * 60 * 24 * 365);
+            req.session.user = loginUser;
+            res.cookie('userToken', token);
+            validate('Login Success', '/', req, res);
+          }
         }
       }
     }
