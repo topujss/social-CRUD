@@ -1,9 +1,10 @@
 import { validate } from '../utility/validate.js';
 
-/**
- * Auth middleware
- * - when logged in you can't access login and register page
- */
+/*************************************************************
+ *                      AUTH MIDDLEWARE                      *
+ * - WHEN LOGGED IN YOU CAN'T ACCESS LOGIN AND REGISTER PAGE *
+ *************************************************************/
+
 export const authMiddleware = (req, res, next) => {
   const token = req.cookies.userToken;
 

@@ -3,6 +3,7 @@ import User from '../models/User.js';
 import { makeHash } from '../utility/hash.js';
 import { validate } from '../utility/validate.js';
 import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
 import { createToken } from '../utility/token.js';
 import { activateMail } from '../utility/mail.js';
 
@@ -20,17 +21,17 @@ export const registerPage = (req, res) => {
   res.render('register');
 };
 
-/**
- * view login Page
- */
+/*******************
+ * VIEW LOGIN PAGE *
+ *******************/
 export const loginPage = (req, res) => {
   res.render('login');
 };
 
-/**
- * @post
- * register user
- */
+/*****************
+ *     @POST     *
+ * REGISTER USER *
+ *****************/
 export const registerUser = async (req, res) => {
   try {
     // desture all data
@@ -45,8 +46,11 @@ export const registerUser = async (req, res) => {
       if (isEmail) {
         validate('Email already exist!', '/register', req, res);
       } else {
+        // get data from mongodb
+        const user = User.create({ name, email, password: makeHash(password) });
+
         // make a token which can last 3 days
-        const token = createToken({ id: loginUser._id }, 1000 * 60 * 60 * 24 * 3);
+        const token = createToken({ id: user._id }, 1000 * 60 * 60 * 24 * 3);
 
         // get activation email url
         const activateLink = `${process.env.APP_URL}:${process.env.PORT}/activate/${token}`;
@@ -58,8 +62,6 @@ export const registerUser = async (req, res) => {
           email,
         });
 
-        // get data from mongodb
-        const user = User.create({ name, email, password: makeHash(password) });
         validate('User Registered', '/login', req, res);
       }
     }
@@ -68,10 +70,10 @@ export const registerUser = async (req, res) => {
   }
 };
 
-/**
- * @post
- * view login Page
- */
+/*****************
+ *     @POST     *
+ * login USER    *
+ *****************/
 export const loginUser = async (req, res) => {
   try {
     // desture all login data
@@ -115,4 +117,35 @@ export const logoutUser = (req, res) => {
   delete req.session.user;
   res.clearCookie('userToken');
   validate('Logout Success', '/login', req, res);
+};
+
+// user activation
+export const userActivate = async (req, res) => {
+  try {
+    // get token
+    const { token } = req.params;
+
+    // now verify token using jwt verify
+    const verifyToken = jwt.verify(String(token), process.env.JWT_TOKEN);
+
+    // * when token isn't verify
+    if (!verifyToken) {
+      validate('Invalid activation link', '/login', req, res);
+    } else {
+      const activateUser = await User.findOne().where('id').eq(verifyToken.id);
+
+      // when isActivate is true
+      if (activateUser.isActivate) {
+        validate('Account activated', '/login', req, res);
+      } else {
+        // when not activated
+        await User.findByIdAndUpdate(verifyToken.id, {
+          isActivate: true,
+        });
+        validate('Account activation success, Please login', '/login', req, res);
+      }
+    }
+  } catch (error) {
+    console.log(error.message);
+  }
 };

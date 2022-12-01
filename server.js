@@ -1,7 +1,7 @@
 /** social project
- * video: https://www.youtube.com/watch?v=PZTHxrc-BPI 30:47 / 1:33:41 < start from here
- * Learned:
- *> Note start:
+ * todo video : https://www.youtube.com/watch?v=BxF-uVVE7JQ 2:28 / 48:39 < start from here
+ * * Learned: activation login,
+ * ! Note start:
  * .js /> in es6 when you import always have to use .js at the end
  */
 // init needy
@@ -15,7 +15,7 @@ import { localsMiddlewares } from './middlewares/localsMiddlewares.js';
 import userRoute from './routes/userRoute.js';
 import cookieParser from 'cookie-parser';
 
-// env init
+// ENV INIT
 dotenv.config();
 const PORT = process.env.PORT || 5000;
 

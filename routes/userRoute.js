@@ -6,6 +6,7 @@ import {
   profilePage,
   registerPage,
   registerUser,
+  userActivate,
 } from '../controllers/userController.js';
 import { authMiddleware as authMiddle } from '../middlewares/authMiddlewares.js';
 import { authRedirectMiddlewares } from '../middlewares/authRedirectMiddlewares.js';
@@ -20,7 +21,7 @@ route.get('/register', authMiddle, registerPage);
 route.post('/login', loginUser);
 route.post('/register', registerUser);
 route.get('/logout', logoutUser);
-route.get('/activate/:token', logoutUser);
+route.get('/activate/:token', userActivate);
 
 // export
 export default route;
