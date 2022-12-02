@@ -1,30 +1,9 @@
 <div class="profile-body">
   <div class="profile-wraper">
     <div class="profile-info">
-      <div class="user info">
-        <img src="./images/avatar.png" alt="" />
-        <h3><%= user.name %></h3>
-      </div>
+      <%- include("./layouts/info") %>
       <hr />
-      <div class="user-menu">
-        <ul>
-          <li class="active">
-            <a href="#"><i class="fa fa-user-md"></i> Profile</a>
-          </li>
-          <li>
-            <a href="#"><i class="fa fa-edit"></i> Edit</a>
-          </li>
-          <li>
-            <a href="#"><i class="fa fa-unlock-alt"></i> Change Password</a>
-          </li>
-          <li>
-            <a href="#"><i class="fa fa-camera"></i> Profile Photo</a>
-          </li>
-          <li>
-            <a href="/logout"><i class="fa fa-sign-out"></i> Logout</a>
-          </li>
-        </ul>
-      </div>
+      <%- include("./layouts/menu") %>
     </div>
     <div class="profile-box">
       <div class="profile-details">

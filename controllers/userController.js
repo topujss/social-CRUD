@@ -49,7 +49,6 @@ export const registerUser = async (req, res) => {
         // get data from mongodb
         const user = await User.create({ name, email, password: makeHash(password) });
 
-
         // make a token which can last 3 days
         const token = createToken({ id: user._id }, 1000 * 60 * 60 * 24 * 3);
 
@@ -137,7 +136,7 @@ export const userActivate = async (req, res) => {
     if (!verifyToken) {
       validate('Invalid activation link', '/login', req, res);
     } else {
-      const activateUser = await User.findOne({_id: verifyToken.id})
+      const activateUser = await User.findOne({ _id: verifyToken.id });
 
       // when isActivate is true
       if (activateUser.isActivate) {
@@ -153,4 +152,20 @@ export const userActivate = async (req, res) => {
   } catch (error) {
     console.log(error.message);
   }
+};
+
+/**
+ * Profile photo update
+ * - will update the single profile photo
+ */
+export const photoPage = async (req, res) => {
+  res.render('photo');
+};
+
+/**
+ * Profile password change
+ * - will change the password of an user
+ */
+export const passPage = async (req, res) => {
+  res.render('pass');
 };

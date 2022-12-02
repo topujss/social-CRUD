@@ -1,40 +1,71 @@
-<div class="auth-body">
-  <div class="auth-wraper">
-    <div class="auth-featured">
-      <img
-        src="https://images.unsplash.com/photo-1667644299860-c181b6f8f1d4?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1171&q=80"
-        alt=""
-      />
-    </div>
-    <div class="auth-form">
-      <h2>Sign In</h2>
+<!-- new one with  -->
+<section
+  class="body-bg min-h-screen pt-12 md:pt-20 pb-6 px-2 md:px-0"
+  style="font-family: 'Lato', sans-serif"
+>
+  <header class="max-w-lg mx-auto">
+    <a href="#">
+      <h1 class="text-4xl font-bold text-white text-center text-uppercase">application</h1>
+    </a>
+  </header>
+
+  <main class="bg-white max-w-lg mx-auto p-8 md:p-12 my-10 rounded-lg shadow-2xl">
+    <section class="text-center">
+      <h3 class="font-bold text-2xl">Welcome to my app</h3>
+      <p class="text-gray-600 pt-2">Sign in to your account.</p>
       <% if (message) { %>
-      <p><%= message %></p>
+      <p class="text-red-500"><%= message %></p>
       <% } %>
-      <div class="form-wraper">
-        <form action="/login" method="POST">
-          <div class="form-group">
-            <label for="">Email</label>
-            <input name="email" type="text" />
-          </div>
-          <div class="form-group">
-            <label for="">Password</label>
-            <input name="password" type="password" />
-          </div>
-          <div class="form-group">
-            <button type="submit">Log In</button>
-          </div>
-        </form>
-      </div>
-      <div class="utility">
-        <a href="#">Forgot password</a>
-        <a href="/register">Create an account</a>
-      </div>
-      <div class="social-login">
-        <a href="#"><i class="fa fa-facebook"></i></a>
-        <a href="#"><i class="fa fa-google"></i></a>
-        <a href="#"><i class="fa fa-github"></i></a>
-      </div>
-    </div>
+    </section>
+
+    <section class="mt-10">
+      <form class="flex flex-col" method="POST" action="/login">
+        <div class="mb-6 pt-3 rounded bg-gray-200">
+          <label class="block text-gray-700 text-sm font-bold mb-2 ml-3" for="email">Email</label>
+          <input
+            type="text"
+            id="email"
+            name="email"
+            class="bg-gray-200 rounded w-full text-gray-700 focus:outline-none border-b-4 border-gray-300 focus:border-purple-600 transition duration-500 px-3 pb-3"
+          />
+        </div>
+        <div class="mb-6 pt-3 rounded bg-gray-200">
+          <label class="block text-gray-700 text-sm font-bold mb-2 ml-3" for="password"
+            >Password</label
+          >
+          <input
+            type="password"
+            name="password"
+            id="password"
+            class="bg-gray-200 rounded w-full text-gray-700 focus:outline-none border-b-4 border-gray-300 focus:border-purple-600 transition duration-500 px-3 pb-3"
+          />
+        </div>
+        <div class="flex justify-end">
+          <a
+            href="/pass-change"
+            class="text-sm text-purple-600 hover:text-purple-700 hover:underline mb-6"
+            >Forgot your password?</a
+          >
+        </div>
+        <button
+          class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 rounded shadow-lg hover:shadow-xl transition duration-200"
+          type="submit"
+        >
+          Sign In
+        </button>
+      </form>
+    </section>
+  </main>
+
+  <div class="max-w-lg mx-auto text-center mt-12 mb-6">
+    <p class="text-white">
+      Don't have an account? <a href="/register" class="font-bold hover:underline">Sign up</a>.
+    </p>
   </div>
-</div>
+
+  <footer class="max-w-lg mx-auto flex justify-center text-white">
+    <a href="/" class="hover:underline">Contact</a>
+    <span class="mx-3">•</span>
+    <a href="/" class="hover:underline">Privacy</a>
+  </footer>
+</section>

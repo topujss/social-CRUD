@@ -7,17 +7,23 @@ import {
   registerPage,
   registerUser,
   userActivate,
+  photoPage,
+  passPage,
 } from '../controllers/userController.js';
-import { authMiddleware as authMiddle } from '../middlewares/authMiddlewares.js';
-import { authRedirectMiddlewares } from '../middlewares/authRedirectMiddlewares.js';
+import { authMiddleware as tokenMW } from '../middlewares/authMiddlewares.js';
+import { authRedirectMiddlewares as redirectMW } from '../middlewares/authRedirectMiddlewares.js';
 
 // router init
 const route = express.Router();
 
 // route mannagement
-route.get('/', authRedirectMiddlewares, profilePage);
-route.get('/login', authMiddle, loginPage);
-route.get('/register', authMiddle, registerPage);
+route.get('/', redirectMW, profilePage);
+
+route.get('/photo-up', redirectMW, photoPage);
+route.get('/pass-change', redirectMW, passPage);
+
+route.get('/login', tokenMW, loginPage);
+route.get('/register', tokenMW, registerPage);
 route.post('/login', loginUser);
 route.post('/register', registerUser);
 route.get('/logout', logoutUser);
