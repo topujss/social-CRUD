@@ -47,7 +47,8 @@ export const registerUser = async (req, res) => {
         validate('Email already exist!', '/register', req, res);
       } else {
         // get data from mongodb
-        const user = User.create({ name, email, password: makeHash(password) });
+        const user = await User.create({ name, email, password: makeHash(password) });
+
 
         // make a token which can last 3 days
         const token = createToken({ id: user._id }, 1000 * 60 * 60 * 24 * 3);
@@ -125,14 +126,18 @@ export const userActivate = async (req, res) => {
     // get token
     const { token } = req.params;
 
+    console.log(token);
+
     // now verify token using jwt verify
     const verifyToken = jwt.verify(String(token), process.env.JWT_TOKEN);
+
+    console.log(verifyToken);
 
     // * when token isn't verify
     if (!verifyToken) {
       validate('Invalid activation link', '/login', req, res);
     } else {
-      const activateUser = await User.findOne().where('id').eq(verifyToken.id);
+      const activateUser = await User.findOne({_id: verifyToken.id})
 
       // when isActivate is true
       if (activateUser.isActivate) {

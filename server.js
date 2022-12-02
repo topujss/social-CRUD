@@ -1,5 +1,5 @@
 /** social project
- * todo video : https://www.youtube.com/watch?v=BxF-uVVE7JQ 2:28 / 48:39 < start from here
+ * todo video : https://www.youtube.com/watch?v=BxF-uVVE7JQ 26:28 / 48:39 < start from here
  * * Learned: activation login,
  * ! Note start:
  * .js /> in es6 when you import always have to use .js at the end
