@@ -9,16 +9,23 @@
       <div class="box-content">
         <h2>Change Photo</h2>
         <hr />
+        <% if (message) { %>
+        <p class="text-red-500"><%= message %></p>
+        <% } %>
         <div class="form-wraper">
-          <form action="">
+          <form action="/photo-up" method="post" enctype="multipart/form-data">
             <div class="form-group">
               <label for="">Select a Photo</label>
               <div class="profile-photo">
-                <img src="./images/avatar.png" alt="" />
+                <% if (user.photo) { %>
+                <img class="profile-preview" src="./media/users/<%= user.photo %>" />
+                <% } else { %>
+                <img class="profile-preview" src="./images/avatar.png" alt="avatar" />
+                <% } %>
               </div>
               <label class="upload">
                 <i class="fa fa-photo uplaod"></i>
-                <input style="display: none" type="file" />
+                <input id="profile_photo" name="profile-p" style="display: none" type="file" />
               </label>
             </div>
             <div class="form-group">

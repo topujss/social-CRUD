@@ -8,7 +8,11 @@
     <div class="profile-box">
       <div class="profile-details">
         <div class="profile-photo">
-          <img src="./images/avatar.png" alt="" />
+          <% if (user.photo) { %>
+          <img class="profile-preview" src="./media/users/<%= user.photo %>" />
+          <% } else { %>
+          <img class="profile-preview" src="./images/avatar.png" alt="avatar" />
+          <% } %>
           <h2><%= user.name %></h2>
           <p><%= user.email %></p>
         </div>

@@ -18,5 +18,35 @@
   <body>
     <%- body %>
     <script src="//cdn.tailwindcss.com"></script>
+    <script>
+      if (document.getElementById('profile_photo')) {
+        document.getElementById('profile_photo').onchange = (e) => {
+          // get the url from the last document
+          const url = URL.createObjectURL(e.target.files[0]);
+
+          // set data to the profile photo
+          document.querySelector('.profile-preview').setAttribute('src', url);
+        };
+      }
+
+      let images = ``;
+      if (document.getElementById('gallery_photo')) {
+        document.getElementById('gallery_photo').onchange = (e) => {
+          // get the file
+          const files = e.target.files;
+
+          // do a loop to find a picture from all files
+          for (let i = 0; i < files.length; i++) {
+            // get the url from the last document
+            const url = URL.createObjectURL(e.target.files[i]);
+
+            images += `<img class="gallery-preview ease-in-out duration-300 hover:ring-1 ring-offset-2 ring-cyan-600" src="${url}" alt="avatar" />`;
+          }
+
+          // set data to the gallery photos
+          document.querySelector('.gallery').innerHTML = images;
+        };
+      }
+    </script>
   </body>
 </html>

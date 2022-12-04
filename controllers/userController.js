@@ -125,12 +125,8 @@ export const userActivate = async (req, res) => {
     // get token
     const { token } = req.params;
 
-    console.log(token);
-
     // now verify token using jwt verify
     const verifyToken = jwt.verify(String(token), process.env.JWT_TOKEN);
-
-    console.log(verifyToken);
 
     // * when token isn't verify
     if (!verifyToken) {
@@ -162,10 +158,54 @@ export const photoPage = async (req, res) => {
   res.render('photo');
 };
 
+export const photoChange = async (req, res) => {
+  try {
+    // update photo data by getting the id from session
+    await User.findByIdAndUpdate(req.session.user._id, {
+      photo: req.file.filename,
+    });
+    // get the photo from session and pass the photo name
+    req.session.user.photo = req.file.filename;
+    validate('Photo uploaded', '/photo-up', req, res);
+  } catch (error) {
+    validate(error.message, '/login', req, res);
+  }
+};
+
+/**
+ * gallery photo update
+ * - will update multiple profile photo
+ */
+export const galleryPage = async (req, res) => {
+  res.render('gallery');
+};
+
+export const galleryChange = async (req, res) => {
+  // try {
+  //   // update photo data by getting the id from session
+  //   await User.findByIdAndUpdate(req.session.user._id, {
+  //     photo: req.file.filename,
+  //   });
+  //   // get the photo from session and pass the photo name
+  //   req.session.user.photo = req.file.filename;
+  //   validate('Photo uploaded', '/photo-up', req, res);
+  // } catch (error) {
+  //   validate(error.message, '/login', req, res);
+  // }
+};
+
 /**
  * Profile password change
  * - will change the password of an user
  */
 export const passPage = async (req, res) => {
   res.render('pass');
+};
+
+/**
+ * Profile edit page
+ * - user can edit there information from name to gender
+ */
+export const editPage = async (req, res) => {
+  res.render('edit');
 };

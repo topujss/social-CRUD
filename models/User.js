@@ -23,6 +23,13 @@ const userSchema = mongoose.Schema(
       type: String,
       trim: true,
     },
+    phone: {
+      type: String,
+      trim: true,
+    },
+    age: {
+      type: Number,
+    },
     skill: {
       type: String,
       trim: true,
@@ -30,6 +37,10 @@ const userSchema = mongoose.Schema(
     gender: {
       type: String,
       enum: ['male', 'female'],
+    },
+    location: {
+      type: String,
+      trim: true,
     },
     photo: {
       type: String,
@@ -39,9 +50,13 @@ const userSchema = mongoose.Schema(
       type: [String],
       trim: true,
     },
+    accessToken: {
+      type: String,
+      trim: true,
+    },
     isActivate: {
       type: Boolean,
-      default: false
+      default: false,
     },
     isAdmin: {
       type: Boolean,
