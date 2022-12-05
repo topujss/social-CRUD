@@ -181,17 +181,21 @@ export const galleryPage = async (req, res) => {
 };
 
 export const galleryChange = async (req, res) => {
-  // try {
-  //   // update photo data by getting the id from session
-  //   await User.findByIdAndUpdate(req.session.user._id, {
-  //     photo: req.file.filename,
-  //   });
-  //   // get the photo from session and pass the photo name
-  //   req.session.user.photo = req.file.filename;
-  //   validate('Photo uploaded', '/photo-up', req, res);
-  // } catch (error) {
-  //   validate(error.message, '/login', req, res);
-  // }
+  try {
+    // do a loop to get certain one
+    for (let i = 0; i < req.files.length; i++) {
+      // update photo data by getting the id from session
+      await User.findByIdAndUpdate(req.session.user._id, {
+        $push: {
+          gallery: req.files[i].filename,
+        },
+      });
+    }
+
+    validate('gallery photo uploaded', '/gallery-up', req, res);
+  } catch (error) {
+    validate(error.message, '/gallery-up', req, res);
+  }
 };
 
 /**
