@@ -1,22 +1,40 @@
-<div class="profile-body">
+<div class="profile-body h-full">
   <div class="profile-wraper">
-    <div class="profile-info">
+    <div class="profile-info bg-teal-500">
       <%- include("./layouts/info") %>
       <hr />
       <%- include("./layouts/menu") %>
     </div>
     <div class="profile-box">
       <div class="profile-details">
-        <div class="profile-photo">
+        <div class="profile-photo flex items-center gap-5 border-b-2 border-indigo-500 pb-5">
           <% if (user.photo) { %>
-          <img class="profile-preview" src="./media/users/<%= user.photo %>" />
+          <img class="profile-preview rounded-full" src="./media/users/<%= user.photo %>" />
           <% } else { %>
-          <img class="profile-preview" src="./images/avatar.png" alt="avatar" />
+          <img class="profile-preview rounded-full" src="./images/avatar.png" alt="avatar" />
           <% } %>
-          <h2><%= user.name %></h2>
-          <p><%= user.email %></p>
+          <div class="profile-data">
+            <h2 class="font-bold text-3xl"><%= user.name %></h2>
+            <p><%= user.email %></p>
+            <p class="follows text-xs text-red-600 cursor-pointer">
+              1k followers <span class="text-black relative bottom-1">.</span> 2k following
+            </p>
+          </div>
         </div>
-        <hr />
+        <div class="user-gallery">
+          <h2 class="font-bold text-lime-600 py-5">Gallery photo</h2>
+          <div class="gallery-area py-5 flex wrap gap-5">
+            <% user.gallery.forEach(galleries => { %>
+            <div class="gallery-item w-1/3 h-56 truncate">
+              <img
+                class="w-full h-full object-cover rounded"
+                src="./media/gallery/<%= galleries %>"
+                alt="gallery items"
+              />
+            </div>
+            <% }) %>
+          </div>
+        </div>
       </div>
     </div>
   </div>
