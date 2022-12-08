@@ -182,15 +182,20 @@ export const galleryPage = async (req, res) => {
 
 export const galleryChange = async (req, res) => {
   try {
+    let isFile = [];
+
     // do a loop to get certain one
-    for (let i = 0; i < req.files.length; i++) {
-      // update photo data by getting the id from session
-      await User.findByIdAndUpdate(req.session.user._id, {
-        $push: {
-          gallery: req.files[i].filename,
-        },
-      });
-    }
+    req.files.forEach((item) => {
+      isFile.push(item.filename);
+      req.session.user.gallery.push(item.filename);
+    });
+
+    // update photo data by getting the id from session
+    await User.findByIdAndUpdate(req.session.user._id, {
+      $push: {
+        gallery: { $each: isFile },
+      },
+    });
 
     validate('gallery photo uploaded', '/gallery-up', req, res);
   } catch (error) {
@@ -207,9 +212,79 @@ export const passPage = async (req, res) => {
 };
 
 /**
+ * Profile password change
+ * - will change the password of an user
+ */
+export const changePassPage = async (req, res) => {
+  try {
+    // get pass from form data
+    const { oldPass, newPass, confirmPass } = req.body;
+
+    // validate data
+    if (!oldPass || !newPass || !confirmPass) {
+      validate('All fields are required!', '/pass-change', req, res);
+    } else {
+      // get pass from session
+      const loggedPass = req.session.user.password;
+
+      // compare old pass with login pass
+      const passCheck = bcrypt.compareSync(oldPass, loggedPass);
+
+      // when both password !match
+      if (!passCheck) {
+        validate('Password not match', '/pass-change', req, res);
+      } else {
+        // when both newPass and confirmPass !match
+        if (newPass != confirmPass) {
+          validate(`Either password isn't match`, '/pass-login', req, res);
+        } else {
+          await User.findByIdAndUpdate(req.session.user._id, {
+            password: makeHash(newPass),
+          });
+          res.clearCookie('userToken');
+          validate('password change success', '/login', req, res);
+        }
+      }
+    }
+  } catch (error) {
+    validate('Password not correct', '/login', req, res);
+  }
+};
+
+/**
  * Profile edit page
  * - user can edit there information from name to gender
  */
 export const editPage = async (req, res) => {
   res.render('edit');
+};
+
+/**
+ * find friends page
+ * - user can find there friends in this route
+ */
+export const findFriendPage = async (req, res) => {
+  try {
+    const friendData = await User.find().where('email').ne(req.session.user.email);
+
+    res.render('friends', { friendData });
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+
+/**
+ * user profile page
+ * - user can go to there friends profile in this route
+ */
+export const userProfileData = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const show = await User.findById(id);
+
+    res.render('single', { show });
+  } catch (error) {
+    console.log(error.message);
+  }
 };

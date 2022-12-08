@@ -50,6 +50,14 @@ const userSchema = mongoose.Schema(
       type: [String],
       trim: true,
     },
+    following: {
+      type: [mongoose.Schema.Types.ObjectId],
+      ref: 'User',
+    },
+    follower: {
+      type: [mongoose.Schema.Types.ObjectId],
+      ref: 'User',
+    },
     accessToken: {
       type: String,
       trim: true,

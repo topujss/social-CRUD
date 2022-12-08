@@ -15,6 +15,9 @@ import {
   photoChange,
   galleryPage,
   galleryChange,
+  findFriendPage,
+  userProfileData,
+  changePassPage,
 } from '../controllers/userController.js';
 import { authMiddleware as tokenMW } from '../middlewares/authMiddlewares.js';
 import { authRedirectMiddlewares as redirectMW } from '../middlewares/authRedirectMiddlewares.js';
@@ -41,7 +44,7 @@ const storage = multer.diskStorage({
 
 // upload multer route area
 const profilePhotoUp = multer({ storage }).single('profile-p');
-const galleryPhotoUp = multer({ storage }).array('gallery-p', 3);
+const galleryPhotoUp = multer({ storage }).array('gallery-p', 5);
 
 // router init
 const route = express.Router();
@@ -58,6 +61,8 @@ route.get('/gallery-up', redirectMW, galleryPage);
 route.post('/gallery-up', galleryPhotoUp, galleryChange);
 
 route.get('/pass-change', redirectMW, passPage);
+route.post('/pass-change', redirectMW, changePassPage);
+
 route.get('/profile-edit', redirectMW, editPage);
 
 route.get('/login', tokenMW, loginPage);
@@ -66,6 +71,10 @@ route.post('/login', loginUser);
 route.post('/register', registerUser);
 route.get('/logout', logoutUser);
 route.get('/activate/:token', userActivate);
+
+// profile photo route
+route.get('/find', redirectMW, findFriendPage);
+route.get('/:id', redirectMW, userProfileData);
 
 // export
 export default route;

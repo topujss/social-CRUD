@@ -1,0 +1,30 @@
+<div class="profile-body h-full">
+  <div class="profile-wraper">
+    <div class="profile-info bg-teal-500">
+      <%- include("./layouts/info") %>
+      <hr />
+      <%- include("./layouts/menu") %>
+    </div>
+    <div class="profile-box">
+      <div class="box-content">
+        <h2>Find friends</h2>
+        <div class="friend-area flex items-center wrap gap-2">
+          <% friendData.forEach(data => { %>
+            <div class="friend-item w-1/2 border-2 border-teal-300 flex items-center gap-4 p-2 mb-3">
+              <a href="/<%= data._id %>">
+                <img class="rounded-full w-24 h-20 object-cover" src="./media/users/<%= data.photo %>" alt="">
+              </a>
+              <div class="friend-content">
+                <p class="text-gray-900 font-bold"><%= data.name %></p>
+                <p class="text-gray-700 text-base"><%= data.email %></p>
+                <a class="block mt-2 bg-cyan-500 text-white px-4 py-1 rounded w-fit" href="#">Follow</a>
+                <!-- <a class="block mt-2 bg-gray-500 text-white px-4 py-1 rounded w-fit" href="#">Unfollow</a> -->
+              </div>
+            </div>
+          <% }) %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

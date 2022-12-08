@@ -6,26 +6,28 @@
       <%- include("./layouts/menu") %>
     </div>
     <div class="profile-box">
+      <% if (message) { %>
+      <p class="text-red-500"><%= message %></p>
+      <% } %>
       <div class="box-content">
         <h2>Change Password</h2>
         <hr />
         <div class="form-wraper">
-          <form action="">
+          <form action="/pass-change" method="post">
             <div class="form-group">
               <label for="old-me">Old Password</label>
-              <input id="old-me" type="text" />
+              <input id="old-me" name="oldPass" type="password" />
             </div>
             <div class="form-group">
               <label for="new-me">New Password</label>
-              <input id="new-me" type="password" />
+              <input id="new-me" name="newPass" type="password" />
             </div>
-
             <div class="form-group">
               <label for="confirm-me">Confirm Password</label>
-              <input id="confirm-me" type="password" />
+              <input id="confirm-me" name="confirmPass" type="password" />
             </div>
             <div class="form-group">
-              <button>Update</button>
+              <button type="submit">Update password</button>
             </div>
           </form>
         </div>
