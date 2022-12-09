@@ -1,5 +1,5 @@
 /** social project
- * todo video : https://youtu.be/VZ-0BjWy1BQ < start from here
+ * todo video : https://youtu.be/JZbus-sLfBA 1:20:24 / 2:12:45 < start from here
  * * Learned: activation login, password page, change info page, multer config, photo page,
  * ! Note start:
  * .js /> in es6 when you import always have to use .js at the end

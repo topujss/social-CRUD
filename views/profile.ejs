@@ -16,9 +16,10 @@
           <div class="profile-data">
             <h2 class="font-bold text-3xl"><%= user.name %></h2>
             <p><%= user.email %></p>
-            <p class="follows text-xs text-red-600 cursor-pointer">
-              1k followers <span class="text-black relative bottom-1">.</span> 2k following
-            </p>
+            <a href="/find" class="follows text-xs text-red-600">
+              <%= user.following.length %> following <span class="text-black relative bottom-1">.</span> <%=
+              user.follower.length %> follower
+            </a>
           </div>
         </div>
         <div class="user-gallery">

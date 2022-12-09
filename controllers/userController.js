@@ -204,8 +204,7 @@ export const galleryChange = async (req, res) => {
 };
 
 /**
- * Profile password change
- * - will change the password of an user
+ * Profile password page
  */
 export const passPage = async (req, res) => {
   res.render('pass');
@@ -252,6 +251,52 @@ export const changePassPage = async (req, res) => {
 };
 
 /**
+ * forget pass email page
+ * - user can send there email
+ */
+export const forgetPassPage = async (req, res) => {
+  res.render('forgetpassemail');
+};
+
+/**
+ * reset pass page
+ * - user can send there email
+ */
+export const resetPassPage = async (req, res) => {
+  res.render('resetpass');
+};
+
+/**
+ * forget pass post get email
+ * - user can send there email
+ */
+export const forgetPass = async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    const forgetpassemail = await User.find().where('email').equals(email);
+
+    if (!forgetpassemail) {
+      validate('Email not found on our end', '/forget-pass', req, res);
+    } else {
+      // create token
+      const token = createToken({ id: forgetpassemail._id }, '2d');
+
+      //Make a activation link
+      const activateLink = `${process.env.APP_URL}:${process.env.PORT}/reset-pass/${token}`;
+
+      await activateMail(email, {
+        name: forgetpassemail.name,
+        link: activateLink,
+      });
+    }
+    validate('Email Send success', '/forget-pass', req, res);
+  } catch (error) {
+    validate(error.message, '/forget-pass', req, res);
+  }
+};
+
+/**
  * Profile edit page
  * - user can edit there information from name to gender
  */
@@ -284,6 +329,58 @@ export const userProfileData = async (req, res) => {
     const show = await User.findById(id);
 
     res.render('single', { show });
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+
+/**
+ * follow user page
+ * - user can go to friends route and follow friends
+ */
+export const followUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const followId = await User.findByIdAndUpdate(req.session.user._id, {
+      $push: {
+        following: id,
+      },
+    });
+    await User.findByIdAndUpdate(id, {
+      $push: {
+        follower: req.session.user._id,
+      },
+    });
+    req.session.user.following.push(id);
+    validate('Follows updated', '/find', req, res);
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+
+/**
+ * unfollow user page
+ * - user can go to friends route and unfollow friends
+ */
+export const unfollowUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const followId = await User.findByIdAndUpdate(req.session.user._id, {
+      $pull: {
+        following: id,
+      },
+    });
+    await User.findByIdAndUpdate(id, {
+      $pull: {
+        follower: req.session.user._id,
+      },
+    });
+    let updatedData = req.session.user.following.filter((data) => data != id);
+    req.session.user.following = updatedData;
+
+    validate('Follows updated', '/find', req, res);
   } catch (error) {
     console.log(error.message);
   }

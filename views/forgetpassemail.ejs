@@ -1,0 +1,24 @@
+<div class="profile-body">
+  <div class="profile-wraper justify-center">
+    <div class="profile-box">
+      <% if (message) { %>
+      <p class="text-red-500"><%= message %></p>
+      <% } %>
+      <div class="box-content">
+        <h2>Change Password</h2>
+        <hr />
+        <div class="form-wraper">
+          <form action="/forget-pass" method="post">
+            <div class="form-group">
+              <label for="oldi-me">Send email</label>
+              <input id="oldi-me" name="email" type="email" />
+            </div>
+            <div class="form-group">
+              <button type="submit">Send new password reset link</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -18,6 +18,11 @@ import {
   findFriendPage,
   userProfileData,
   changePassPage,
+  followUser,
+  unfollowUser,
+  forgetPassPage,
+  forgetPass,
+  resetPassPage,
 } from '../controllers/userController.js';
 import { authMiddleware as tokenMW } from '../middlewares/authMiddlewares.js';
 import { authRedirectMiddlewares as redirectMW } from '../middlewares/authRedirectMiddlewares.js';
@@ -60,8 +65,18 @@ route.post('/photo-up', profilePhotoUp, photoChange);
 route.get('/gallery-up', redirectMW, galleryPage);
 route.post('/gallery-up', galleryPhotoUp, galleryChange);
 
+// password route
 route.get('/pass-change', redirectMW, passPage);
 route.post('/pass-change', redirectMW, changePassPage);
+
+// forget password route
+route.get('/forget-pass', tokenMW, forgetPassPage);
+route.post('/forget-pass', forgetPass);
+route.get('/reset-pass/:token', resetPassPage);
+
+// follow page route
+route.get('/follow/:id', redirectMW, followUser);
+route.get('/unfollow/:id', redirectMW, unfollowUser);
 
 route.get('/profile-edit', redirectMW, editPage);
 
