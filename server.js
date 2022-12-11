@@ -33,19 +33,19 @@ app.use(
 
 // middlewares
 app.use(localsMiddlewares);
+app.use(cookieParser());
 
 // express middlewares
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
-
-// static folder
-app.use(express.static('public'));
 
 // ejs temp init
 app.set('view engine', 'ejs');
-app.set('layout', 'layouts/app');
 app.use(expLyts);
+app.set('layout', 'layouts/app');
+
+// static folder
+app.use(express.static('public'));
 
 // route
 app.use('/', userRoute);

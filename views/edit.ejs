@@ -7,36 +7,39 @@
     </div>
     <div class="profile-box">
       <div class="box-content">
+        <% if (message) { %>
+        <p class="text-red-500"><%= message %></p>
+        <% } %>
         <h2>user profile information update</h2>
         <hr />
         <div class="form-wraper">
-          <form action="">
+          <form action="/profile-edit" method="post">
             <div class="form-group">
               <label for="name">Name</label>
-              <input id="name" type="text" />
+              <input id="name" name="name" type="text" />
             </div>
             <div class="form-group">
               <label for="email">Email address</label>
-              <input id="email" type="email" />
+              <input id="email" name="email" type="email" />
             </div>
             <div class="form-group">
               <label for="userme">Username</label>
-              <input id="userme" type="text" />
+              <input id="userme" name="username" type="text" />
             </div>
             <div class="form-group">
               <label for="locate">Location</label>
-              <input id="locate" type="text" />
+              <input id="locate" name="location" type="text" />
             </div>
             <div class="form-group">
               <label for="ph">Phone number</label>
-              <input id="ph" type="text" />
+              <input id="ph" name="cell" type="text" />
             </div>
             <div class="form-group">
               <label for="ge">Gender</label>
-              <input id="ge" type="text" />
+              <input id="ge" name="gender" type="text" />
             </div>
             <div class="form-group">
-              <button>Update</button>
+              <button type="submit">Update profile</button>
             </div>
           </form>
         </div>

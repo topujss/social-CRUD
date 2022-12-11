@@ -1,5 +1,5 @@
 <div class="profile-body">
-  <div class="profile-wraper">
+  <div class="profile-wraper justify-center">
     <div class="profile-box">
       <% if (message) { %>
       <p class="text-red-500"><%= message %></p>
@@ -8,8 +8,8 @@
         <h2>Change Password</h2>
         <hr />
         <div class="form-wraper">
-          <form action="#" method="post">
-            <div class="form-group">
+          <form action="/resetpass/<%= token %>" method="post">
+            <div class="form-group my-4">
               <label for="new-me">New Password</label>
               <input id="new-me" name="newPass" type="password" />
             </div>

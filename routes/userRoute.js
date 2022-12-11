@@ -23,6 +23,8 @@ import {
   forgetPassPage,
   forgetPass,
   resetPassPage,
+  resetPassChange,
+  editChange,
 } from '../controllers/userController.js';
 import { authMiddleware as tokenMW } from '../middlewares/authMiddlewares.js';
 import { authRedirectMiddlewares as redirectMW } from '../middlewares/authRedirectMiddlewares.js';
@@ -54,38 +56,39 @@ const galleryPhotoUp = multer({ storage }).array('gallery-p', 5);
 // router init
 const route = express.Router();
 
-// route mannagement
-route.get('/', redirectMW, profilePage);
+// profile route
+route.route('/').get(redirectMW, profilePage);
+
+// profile edit route
+route.route('/profile-edit').get(redirectMW, editPage).post(editChange);
+
+// register route
+route.route('/register').get(tokenMW, registerPage).post(registerUser);
+
+// login and logout route
+route.route('/login').get(tokenMW, loginPage).post(loginUser);
+route.get('/logout', logoutUser);
 
 // profile photo route
-route.get('/photo-up', redirectMW, photoPage);
-route.post('/photo-up', profilePhotoUp, photoChange);
+route.route('/photo-up').get(redirectMW, photoPage).post(profilePhotoUp, photoChange);
 
 // gallery photo route
-route.get('/gallery-up', redirectMW, galleryPage);
-route.post('/gallery-up', galleryPhotoUp, galleryChange);
+route.route('/gallery-up').get(redirectMW, galleryPage).post(galleryPhotoUp, galleryChange);
 
 // password route
-route.get('/pass-change', redirectMW, passPage);
-route.post('/pass-change', redirectMW, changePassPage);
+route.route('/pass-change').get(redirectMW, passPage).post(redirectMW, changePassPage);
 
 // forget password route
-route.get('/forget-pass', tokenMW, forgetPassPage);
-route.post('/forget-pass', forgetPass);
-route.get('/reset-pass/:token', resetPassPage);
+route.route('/forget-pass').get(tokenMW, forgetPassPage).post(forgetPass);
 
-// follow page route
-route.get('/follow/:id', redirectMW, followUser);
-route.get('/unfollow/:id', redirectMW, unfollowUser);
+// reset password route
+route.route('/resetpass/:token').get(resetPassPage).post(resetPassChange);
 
-route.get('/profile-edit', redirectMW, editPage);
-
-route.get('/login', tokenMW, loginPage);
-route.get('/register', tokenMW, registerPage);
-route.post('/login', loginUser);
-route.post('/register', registerUser);
-route.get('/logout', logoutUser);
 route.get('/activate/:token', userActivate);
+
+// follow and unfollow page route
+route.route('/follow/:id').get(redirectMW, followUser);
+route.route('/unfollow/:id').get(redirectMW, unfollowUser);
 
 // profile photo route
 route.get('/find', redirectMW, findFriendPage);

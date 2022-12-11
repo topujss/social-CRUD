@@ -8,30 +8,37 @@ import { createToken } from '../utility/token.js';
 import { activateMail } from '../utility/mail.js';
 
 /**
- * view profile Page
- */
+ *  @desc profile page show
+ *  @name get
+ *  @access private
+ **/
 export const profilePage = (req, res) => {
   res.render('profile');
 };
 
 /**
- * view register Page
- */
+ *  @desc register page for user
+ *  @name get
+ *  @access public
+ **/
 export const registerPage = (req, res) => {
   res.render('register');
 };
 
-/*******************
- * VIEW LOGIN PAGE *
- *******************/
+/**
+ *  @desc login page for user
+ *  @name get
+ *  @access public
+ **/
 export const loginPage = (req, res) => {
   res.render('login');
 };
 
-/*****************
- *     @POST     *
- * REGISTER USER *
- *****************/
+/**
+ *  @desc fetch register data user
+ *  @name post
+ *  @access private
+ **/
 export const registerUser = async (req, res) => {
   try {
     // desture all data
@@ -70,10 +77,11 @@ export const registerUser = async (req, res) => {
   }
 };
 
-/*****************
- *     @POST     *
- * login USER    *
- *****************/
+/**
+ *  @desc fetch login data user
+ *  @name post
+ *  @access private
+ **/
 export const loginUser = async (req, res) => {
   try {
     // desture all login data
@@ -111,15 +119,21 @@ export const loginUser = async (req, res) => {
 };
 
 /**
- * logout page
- */
+ *  @desc logout for user
+ *  @name get
+ *  @access private
+ **/
 export const logoutUser = (req, res) => {
   delete req.session.user;
   res.clearCookie('userToken');
   validate('Logout Success', '/login', req, res);
 };
 
-// user activation
+/**
+ *  @desc activate an user
+ *  @name post
+ *  @access public
+ **/
 export const userActivate = async (req, res) => {
   try {
     // get token
@@ -151,13 +165,20 @@ export const userActivate = async (req, res) => {
 };
 
 /**
- * Profile photo update
- * - will update the single profile photo
- */
+ *  @title Profile photo update
+ *  @desc will update the single profile photo
+ *  @name get
+ *  @access public
+ **/
 export const photoPage = async (req, res) => {
   res.render('photo');
 };
 
+/**
+ *  @desc change photo user
+ *  @name post
+ *  @access private
+ **/
 export const photoChange = async (req, res) => {
   try {
     // update photo data by getting the id from session
@@ -173,9 +194,11 @@ export const photoChange = async (req, res) => {
 };
 
 /**
- * gallery photo update
- * - will update multiple profile photo
- */
+ *  @title gallery photo update
+ *  @desc user can upload multiple profile photo
+ *  @name post
+ *  @access private
+ **/
 export const galleryPage = async (req, res) => {
   res.render('gallery');
 };
@@ -204,16 +227,20 @@ export const galleryChange = async (req, res) => {
 };
 
 /**
- * Profile password page
- */
+ *  @desc Profile password page
+ *  @name get
+ *  @access private
+ **/
 export const passPage = async (req, res) => {
   res.render('pass');
 };
 
 /**
- * Profile password change
- * - will change the password of an user
- */
+ *  @title Profile password change
+ *  @desc user can change the password
+ *  @name post
+ *  @access private
+ **/
 export const changePassPage = async (req, res) => {
   try {
     // get pass from form data
@@ -251,63 +278,153 @@ export const changePassPage = async (req, res) => {
 };
 
 /**
- * forget pass email page
- * - user can send there email
- */
+ *  @title forget pass email page
+ *  @desc user can send there email
+ *  @name get
+ *  @access public
+ **/
 export const forgetPassPage = async (req, res) => {
   res.render('forgetpassemail');
 };
 
 /**
- * reset pass page
- * - user can send there email
- */
-export const resetPassPage = async (req, res) => {
-  res.render('resetpass');
+ *  @title reset pass page
+ *  @desc user can reset there password
+ *  @name get
+ *  @access public
+ **/
+export const resetPassPage = (req, res) => {
+  const { token } = req.params;
+
+  res.render('resetpass', {
+    token,
+  });
 };
 
 /**
- * forget pass post get email
- * - user can send there email
- */
-export const forgetPass = async (req, res) => {
+ *  @title reset pass change
+ *  @desc user can reset there password in backend
+ *  @name post
+ *  @access private
+ **/
+export const resetPassChange = async (req, res) => {
   try {
-    const { email } = req.body;
+    const { token } = req.params;
+    const tokenIn = jwt.verify(token, process.env.JWT_TOKEN);
 
-    const forgetpassemail = await User.find().where('email').equals(email);
-
-    if (!forgetpassemail) {
-      validate('Email not found on our end', '/forget-pass', req, res);
+    if (!tokenIn) {
+      validate('Token not valid', `/resetpass/${token}`, req, res);
     } else {
-      // create token
-      const token = createToken({ id: forgetpassemail._id }, '2d');
+      const { newPass, confirmPass } = req.body;
 
-      //Make a activation link
-      const activateLink = `${process.env.APP_URL}:${process.env.PORT}/reset-pass/${token}`;
-
-      await activateMail(email, {
-        name: forgetpassemail.name,
-        link: activateLink,
-      });
+      if (!newPass || !confirmPass) {
+        validate('Fields can not be empty', `/resetpass/${token}`, req, res);
+      } else {
+        if (newPass != confirmPass) {
+          validate('password not match', `/resetpass/${token}`, req, res);
+        } else {
+          await User.findByIdAndUpdate(
+            { _id: tokenIn.id },
+            {
+              password: makeHash(newPass),
+            }
+          );
+          validate('Pass successfully reset', '/login', req, res);
+        }
+      }
     }
-    validate('Email Send success', '/forget-pass', req, res);
   } catch (error) {
     validate(error.message, '/forget-pass', req, res);
   }
 };
 
 /**
- * Profile edit page
- * - user can edit there information from name to gender
- */
+ *  @title forget pass post get email
+ *  @desc user can change there password by confirming from email
+ *  @name post
+ *  @access public
+ **/
+export const forgetPass = async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    const forgetpassemail = await User.findOne().where('email').equals(email);
+
+    if (!forgetpassemail) {
+      validate('Email not found on our end', '/forget-pass', req, res);
+    } else {
+      // make a token which can last 3 days
+      const token = createToken({ id: forgetpassemail._id }, 1000 * 60 * 60 * 24 * 3);
+
+      // get activation email url
+      const activateLink = `${process.env.APP_URL}:${process.env.PORT}/resetpass/${token}`;
+
+      await activateMail(email, {
+        name: forgetpassemail.name,
+        link: activateLink,
+      });
+      validate('Email Send success', '/forget-pass', req, res);
+    }
+  } catch (error) {
+    validate(error.message, '/forget-pass', req, res);
+  }
+};
+
+/**
+ *  @title Profile edit page
+ *  @desc user can edit there information from name to gender
+ *  @name get
+ *  @access private
+ **/
 export const editPage = async (req, res) => {
   res.render('edit');
 };
 
 /**
- * find friends page
- * - user can find there friends in this route
- */
+ *  @title Profile edit data
+ *  @desc user can edit there information from name to gender
+ *  @name get
+ *  @access private
+ **/
+export const editChange = async (req, res) => {
+  try {
+    // get form data
+    const { name, email, username, location, cell, gender } = req.body;
+
+    // validation
+    // || !email || !username || !cell || !location || !gender
+    if (!name) {
+      validate('All fields required!', '/profile-edit', req, res);
+    } else {
+      // pass data to database
+      const userData = await User.findByIdAndUpdate(req.session.user._id, {
+        name,
+        email,
+        username,
+        location,
+        cell,
+        gender,
+      });
+      // send data to session
+      req.session.user.name = name;
+      req.session.user.email = email;
+      req.session.user.username = username;
+      req.session.user.location = location;
+      req.session.user.cell = cell;
+      req.session.user.gender = gender;
+      validate('Updated successfully', '/profile-edit', req, res);
+    }
+  } catch (error) {
+    validate(error.message, '/profile-edit', req, res);
+  }
+};
+
+/**
+ *  @title find friends page
+ *  @desc user can find there friends in this route
+ *  @name get
+ *  @access private
+ **/
 export const findFriendPage = async (req, res) => {
   try {
     const friendData = await User.find().where('email').ne(req.session.user.email);
@@ -319,9 +436,11 @@ export const findFriendPage = async (req, res) => {
 };
 
 /**
- * user profile page
- * - user can go to there friends profile in this route
- */
+ *  @title user profile page
+ *  @desc user can go to there friends profile in this route
+ *  @name get
+ *  @access private
+ **/
 export const userProfileData = async (req, res) => {
   try {
     const { id } = req.params;
@@ -335,9 +454,11 @@ export const userProfileData = async (req, res) => {
 };
 
 /**
- * follow user page
- * - user can go to friends route and follow friends
- */
+ *  @title follow user page
+ *  @desc user can go to friends route and follow friends
+ *  @name post
+ *  @access private
+ **/
 export const followUser = async (req, res) => {
   try {
     const { id } = req.params;
@@ -360,9 +481,11 @@ export const followUser = async (req, res) => {
 };
 
 /**
- * unfollow user page
- * - user can go to friends route and unfollow friends
- */
+ *  @title unfollow user page
+ *  @desc user can go to friends route and unfollow friends
+ *  @name post
+ *  @access private
+ **/
 export const unfollowUser = async (req, res) => {
   try {
     const { id } = req.params;
