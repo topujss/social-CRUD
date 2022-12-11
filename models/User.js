@@ -19,11 +19,11 @@ const userSchema = mongoose.Schema(
       trim: true,
       required: true,
     },
-    userName: {
+    username: {
       type: String,
       trim: true,
     },
-    phone: {
+    cell: {
       type: String,
       trim: true,
     },

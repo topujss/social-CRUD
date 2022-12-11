@@ -389,30 +389,25 @@ export const editPage = async (req, res) => {
 export const editChange = async (req, res) => {
   try {
     // get form data
-    const { name, email, username, location, cell, gender } = req.body;
+    const { name, username, location, cell, gender } = req.body;
 
     // validation
-    // || !email || !username || !cell || !location || !gender
-    if (!name) {
+    if (!name || !username || !cell || !location || !gender) {
       validate('All fields required!', '/profile-edit', req, res);
     } else {
       // pass data to database
       const userData = await User.findByIdAndUpdate(req.session.user._id, {
         name,
-        email,
-        username,
         location,
+        username,
         cell,
         gender,
       });
+
+      req.session.user = userData;
+
       // send data to session
-      req.session.user.name = name;
-      req.session.user.email = email;
-      req.session.user.username = username;
-      req.session.user.location = location;
-      req.session.user.cell = cell;
-      req.session.user.gender = gender;
-      validate('Updated successfully', '/profile-edit', req, res);
+      validate('Updated successfully', '/logout', req, res);
     }
   } catch (error) {
     validate(error.message, '/profile-edit', req, res);
